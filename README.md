@@ -1,2 +1,7 @@
 # avsync
-Audio Video Synchronization: How I import aligned video recorded with LTC data from Reaper
+
+Audio Video Synchronization: How I import aligned video recorded with
+LTC data from Reaper
+
+[avsync.sh](avsync.sh) automates the process described in [manual.md](manual.md)
+
