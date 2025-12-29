@@ -81,18 +81,20 @@ echo "Temp dir: $TMP"
 echo "Output:   $OUT"
 
 ### COPY INPUTS ###
-cp "$T7/Video ISO Files/Untitled CAM 1 01.mp4" "$TMP/CAM1.mp4"
-cp "$T7/Video ISO Files/Untitled CAM 2 01.mp4" "$TMP/CAM2.mp4"
-cp "$T7/Video ISO Files/Untitled CAM 3 01.mp4" "$TMP/CAM3.mp4"
-cp "$T7/Audio Source Files/Untitled MIC 1 01.wav" "$TMP/LTC.wav"
-cp "$AUDIO" "$TMP/track.wav"
+cp -X "$T7/Video ISO Files/Untitled CAM 1 01.mp4" "$TMP/CAM1.mp4"
+cp -X "$T7/Video ISO Files/Untitled CAM 2 01.mp4" "$TMP/CAM2.mp4"
+cp -X "$T7/Video ISO Files/Untitled CAM 3 01.mp4" "$TMP/CAM3.mp4"
+cp -X "$T7/Audio Source Files/Untitled MIC 1 01.wav" "$TMP/LTC.wav"
+cp -X "$AUDIO" "$TMP/track.wav"
 
 ### COMPUTE OFFSET ###
 # Parse the first LTC frame after #DISCONTINUITY and read its start sample (field 4)
 FIRST_SAMPLE=$(
-  ltcdump -f "$FPS" "$TMP/LTC.wav" |
-  awk '/#DISCONTINUITY/{getline; print $4; exit}'
-)
+  ltcdump -f "$FPS" "$TMP/LTC.wav" 2>/dev/null |
+  awk '
+    /^#DISCONTINUITY/ { getline; print $4; exit }
+  '
+) || true
 
 if [[ -z "${FIRST_SAMPLE:-}" ]]; then
   echo "Error: no LTC frames detected in $T7/Audio Source Files/Untitled MIC 1 01.wav"
