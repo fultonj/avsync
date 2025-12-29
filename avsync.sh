@@ -102,7 +102,10 @@ if [[ -z "${FIRST_SAMPLE:-}" ]]; then
 fi
 
 SECONDS=$(echo "scale=6; $FIRST_SAMPLE / $SR" | bc)
-FRAMES=$(echo "($SECONDS * $FPS)+0.5" | bc | cut -d. -f1)
+FRAMES=$(
+  awk -v s="$FIRST_SAMPLE" -v sr="$SR" -v fps="$FPS" \
+    'BEGIN { printf "%d\n", (s/sr)*fps + 0.5 }'
+)
 
 TC_SEC=$((FRAMES / FPS))
 TC_FR=$((FRAMES % FPS))
