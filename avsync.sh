@@ -5,6 +5,7 @@ set -euo pipefail
 BASE="/Users/fultonj/Documents/reaper/Covers"
 FPS=30
 SR=48000
+SUF=01
 
 ### DEFAULTS ###
 T7="/Volumes/T7/Untitled"
@@ -81,10 +82,10 @@ echo "Temp dir: $TMP"
 echo "Output:   $OUT"
 
 ### COPY INPUTS ###
-cp -X "$T7/Video ISO Files/Untitled CAM 1 01.mp4" "$TMP/CAM1.mp4"
-cp -X "$T7/Video ISO Files/Untitled CAM 2 01.mp4" "$TMP/CAM2.mp4"
-cp -X "$T7/Video ISO Files/Untitled CAM 3 01.mp4" "$TMP/CAM3.mp4"
-cp -X "$T7/Audio Source Files/Untitled MIC 1 01.wav" "$TMP/LTC.wav"
+cp -X "$T7/Video ISO Files/Untitled CAM 1 ${SUF}.mp4" "$TMP/CAM1.mp4"
+cp -X "$T7/Video ISO Files/Untitled CAM 2 ${SUF}.mp4" "$TMP/CAM2.mp4"
+cp -X "$T7/Video ISO Files/Untitled CAM 3 ${SUF}.mp4" "$TMP/CAM3.mp4"
+cp -X "$T7/Audio Source Files/Untitled MIC 1 ${SUF}.wav" "$TMP/LTC.wav"
 cp -X "$AUDIO" "$TMP/track.wav"
 
 ### COMPUTE OFFSET ###
@@ -97,7 +98,7 @@ FIRST_SAMPLE=$(
 ) || true
 
 if [[ -z "${FIRST_SAMPLE:-}" ]]; then
-  echo "Error: no LTC frames detected in $T7/Audio Source Files/Untitled MIC 1 01.wav"
+  echo "Error: no LTC frames detected in $T7/Audio Source Files/Untitled MIC 1 ${SUF}.wav"
   exit 1
 fi
 
