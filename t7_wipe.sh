@@ -2,6 +2,7 @@
 set -euo pipefail
 
 T7="/Volumes/T7"
+UMOUNT=0
 
 # Ensure the volume is mounted
 if [[ ! -d "$T7" ]]; then
@@ -22,6 +23,10 @@ else
   printf '  %q\n' "${targets[@]}"
   rm -rf -- "${targets[@]}"
   echo "Done deleting"
+fi
+
+if [[ $UMOUNT -lt 1 ]]; then
+  exit 0
 fi
 
 # Unmount (handle QuickLook/Finder dissenters, then force if needed)
