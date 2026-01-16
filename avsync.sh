@@ -13,7 +13,7 @@ KEEP_TMP=false
 
 usage() {
   echo "Usage:"
-  echo "  $0 --proj Slayer/Postmortem [--t7 /Volumes/T7/Untitled] [--audio Reaper.wav] [--keep-tmp]"
+  echo "  $0 --proj Slayer/Postmortem [--t7 /Volumes/T7/Untitled] [--audio Reaper.wav] [--suffix 01] [--keep-tmp]"
   exit 1
 }
 
@@ -23,12 +23,20 @@ while [[ $# -gt 0 ]]; do
     --t7) T7="$2"; shift 2 ;;
     --audio) AUDIO="$2"; shift 2 ;;
     --proj) PROJ_REL="$2"; shift 2 ;;
+    --suffix)
+      [[ $# -ge 2 ]] || { echo "Error: --suffix requires a value"; exit 1; }
+      SUF="$2"
+      shift 2
+      ;;
     --keep-tmp) KEEP_TMP=true; shift ;;
     *) usage ;;
   esac
 done
 
 [[ -z "${PROJ_REL:-}" ]] && usage
+# Normalize/validate suffix (allow 1-2 digits; pad to 2)
+[[ "$SUF" =~ ^[0-9]{1,2}$ ]] || { echo "Error: --suffix must be 1 or 2 digits (e.g. 1, 01, 10)"; exit 1; }
+SUF=$(printf "%02d" "$SUF")
 
 PROJ="$BASE/$PROJ_REL"
 VIDDIR="$PROJ/videos"
