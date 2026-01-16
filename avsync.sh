@@ -10,11 +10,10 @@ SUF=01
 ### DEFAULTS ###
 T7="/Volumes/T7/Untitled"
 KEEP_TMP=false
-WIPE_T7=false
 
 usage() {
   echo "Usage:"
-  echo "  $0 --proj Slayer/Postmortem [--t7 /Volumes/T7/Untitled] [--audio Reaper.wav] [--keep-tmp] [--wipe-t7]"
+  echo "  $0 --proj Slayer/Postmortem [--t7 /Volumes/T7/Untitled] [--audio Reaper.wav] [--keep-tmp]"
   exit 1
 }
 
@@ -25,7 +24,6 @@ while [[ $# -gt 0 ]]; do
     --audio) AUDIO="$2"; shift 2 ;;
     --proj) PROJ_REL="$2"; shift 2 ;;
     --keep-tmp) KEEP_TMP=true; shift ;;
-    --wipe-t7) WIPE_T7=true; shift ;;
     *) usage ;;
   esac
 done
@@ -85,6 +83,15 @@ echo "Output:   $OUT"
 cp -X "$T7/Video ISO Files/Untitled CAM 1 ${SUF}.mp4" "$TMP/CAM1.mp4"
 cp -X "$T7/Video ISO Files/Untitled CAM 2 ${SUF}.mp4" "$TMP/CAM2.mp4"
 cp -X "$T7/Video ISO Files/Untitled CAM 3 ${SUF}.mp4" "$TMP/CAM3.mp4"
+
+CAM4_SRC="$T7/Video ISO Files/Untitled CAM 4 ${SUF}.mp4"
+if [[ -f "$CAM4_SRC" ]]; then
+  cp -X "$CAM4_SRC" "$TMP/CAM4.mp4"
+  HAS_CAM4=true
+else
+  HAS_CAM4=false
+fi
+
 cp -X "$T7/Audio Source Files/Untitled MIC 1 ${SUF}.wav" "$TMP/LTC.wav"
 cp -X "$AUDIO" "$TMP/track.wav"
 
@@ -102,7 +109,6 @@ if [[ -z "${FIRST_SAMPLE:-}" ]]; then
   exit 1
 fi
 
-SECONDS=$(echo "scale=6; $FIRST_SAMPLE / $SR" | bc)
 FRAMES=$(
   awk -v s="$FIRST_SAMPLE" -v sr="$SR" -v fps="$FPS" \
     'BEGIN { printf "%d\n", (s/sr)*fps + 0.5 }'
@@ -121,6 +127,12 @@ for i in 1 2 3; do
     "$OUT/CAM${i}_tc.mp4"
 done
 
+if [[ "$HAS_CAM4" == true ]]; then
+  ffmpeg -loglevel error -y -i "$TMP/CAM4.mp4" \
+    -c copy -timecode 00:00:00:01 \
+    "$OUT/CAM4_tc.mp4"
+fi
+
 ### STAMP AUDIO (wrapper MOV with OFFSET timecode) ###
 DUR=$(ffprobe -v error -show_entries format=duration -of default=nk=1:nw=1 "$TMP/track.wav")
 
@@ -138,15 +150,10 @@ ffmpeg -loglevel error -y -f lavfi -r "$FPS" \
 ### VERIFY TIMECODES ###
 echo "Verifying embedded timecodes:"
 for f in "$OUT"/CAM*_tc.mp4 "$OUT/${AUDIO_STEM}_tc.mov"; do
+  [[ -e "$f" ]] || continue
   echo "$f"
   ffprobe -v error -select_streams v:0 -show_entries stream_tags=timecode -of default=nw=1 "$f"
 done
-
-### OPTIONAL WIPE ###
-if [[ "$WIPE_T7" == true ]]; then
-  echo "Removing T7 Untitled directory: $T7"
-  rm -rf "$T7"
-fi
 
 echo "Done. Import into Resolve from:"
 echo "  $OUT"
