@@ -74,6 +74,13 @@ Click the Gear Icon in the bottom left \> select General \> select Line (not Mic
 
 Make sure Reaper is always running when you record on the ATEM, otherwise you’ll just capture silence in that track.
 
+#### Optional Backup Audio
+
+The **Mic 2** input can be used to capture audio from the performance
+with either a microphone in the room for drums or if guitar is being
+recorded, I use the thru output of my J48 direct box. This second wav
+file can be useful for a reference if you need to sync manually.
+
 ## Use Reaper as Time Source
 
 Create an LTC Track

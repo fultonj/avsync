@@ -163,5 +163,8 @@ for f in "$OUT"/CAM*_tc.mp4 "$OUT/${AUDIO_STEM}_tc.mov"; do
   ffprobe -v error -select_streams v:0 -show_entries stream_tags=timecode -of default=nw=1 "$f"
 done
 
+### Copy MIC 2 audio to use for manual sync as a backup
+cp -X "$T7/Audio Source Files/Untitled MIC 2 ${SUF}.wav" "$OUT/${AUDIO_STEM}_mic2_backup.wav"
+
 echo "Done. Import into Resolve from:"
 echo "  $OUT"
