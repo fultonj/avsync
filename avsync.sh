@@ -104,13 +104,40 @@ cp -X "$T7/Audio Source Files/Untitled MIC 1 ${SUF}.wav" "$TMP/LTC.wav"
 cp -X "$AUDIO" "$TMP/track.wav"
 
 ### COMPUTE OFFSET ###
-# Parse the first LTC frame after #DISCONTINUITY and read its start sample (field 4)
-FIRST_SAMPLE=$(
-  ltcdump -f "$FPS" "$TMP/LTC.wav" 2>/dev/null |
-  awk '
-    /^#DISCONTINUITY/ { getline; print $4; exit }
-  '
-) || true
+decode_first_sample() {
+  local wav="$1"
+  ltcdump -f "$FPS" "$wav" 2>/dev/null |
+    awk '
+      /^#DISCONTINUITY/ { getline; print $4; exit }
+    '
+}
+
+FIRST_SAMPLE=""
+
+# Try RIGHT channel first (ATEM puts LTC on right)
+ffmpeg -loglevel error -y -i "$TMP/LTC.wav" \
+  -af "pan=mono|c0=c1" -ar "$SR" -c:a pcm_s16le \
+  "$TMP/LTC_R.wav" || true
+
+if [[ -f "$TMP/LTC_R.wav" ]]; then
+  FIRST_SAMPLE="$(decode_first_sample "$TMP/LTC_R.wav" || true)"
+fi
+
+# Fallback: LEFT channel
+if [[ -z "${FIRST_SAMPLE:-}" ]]; then
+  ffmpeg -loglevel error -y -i "$TMP/LTC.wav" \
+    -af "pan=mono|c0=c0" -ar "$SR" -c:a pcm_s16le \
+    "$TMP/LTC_L.wav" || true
+
+  if [[ -f "$TMP/LTC_L.wav" ]]; then
+    FIRST_SAMPLE="$(decode_first_sample "$TMP/LTC_L.wav" || true)"
+  fi
+fi
+
+# Last resort: original stereo
+if [[ -z "${FIRST_SAMPLE:-}" ]]; then
+  FIRST_SAMPLE="$(decode_first_sample "$TMP/LTC.wav" || true)"
+fi
 
 if [[ -z "${FIRST_SAMPLE:-}" ]]; then
   echo "Error: no LTC frames detected in $T7/Audio Source Files/Untitled MIC 1 ${SUF}.wav"

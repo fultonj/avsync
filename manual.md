@@ -116,6 +116,30 @@ Route the LTC Track
 
 This must be done per project but copying/pasting the track between projects can save time. 
 
+### LTC mono vs stereo
+
+In the routing matrix image:
+
+- Track 6 = LTC
+- Output 5 (mono) is checked
+- Output 6 is not checked
+- Output 5/6 together form a stereo pair at the interface level
+
+That means:
+
+- LTC is being sent only to Output 5
+- When recorded as "stereo", it lands on one side only
+- in my case, the RIGHT channel
+
+Per ChatGPT we do no want stereo LTC.
+
+If you send LTC to both:
+- You’ll get dual-mono LTC (same signal both channels)
+- That can work, but it’s worse practice
+- Some LTC decoders will misbehave if both channels contain phase-identical LTC
+- It also makes it easier for processing/mixing to damage the signal
+
+
 ## Record
 
 ### Record to SSD
