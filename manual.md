@@ -85,9 +85,22 @@ Make sure Reaper is always running when you record on the ATEM, otherwise you’
 #### Optional Backup Audio
 
 The **Mic 2** input can be used to capture audio from the performance
-with either a microphone in the room for drums or if guitar is being
-recorded, I use the thru output of my J48 direct box. This second wav
-file can be useful for a reference if you need to sync manually.
+with either a microphone in the room for drums or direct guitar signal.
+
+Do not use the thru output of a J48 direct box for guitar however for
+this purpose since it can pick up the LTC data. Per ChatGPT:
+
+The J48 thru is a hardwired parallel output, not isolated from the
+input. When you fed LTC into the J48 input and had the thru connected
+to your guitar chain/interface, the LTC signal was being injected
+directly into the guitar input path. Any amp sim or plugin monitoring
+that input would therefore amplify and make the LTC audible.
+
+Instead you can use a separate dedicated output on the FocusRite to
+which only one signal is routed (guitar or room mic).
+
+This second wav file can be useful for a reference if you need to sync
+manually.
 
 ## Use Reaper as Time Source
 
