@@ -62,13 +62,17 @@ The p30 is from the the AVKANS Go’s *native output frame rate is 30* fps
 
 Open **ATEM Software Control → Audio tab**.
 
-Find **Mic 1** (where your Scarlett LTC is plugged in).
-Set it to **Off** (button under the fader will turn gray).
+Find Mic 1 (where your Scarlett LTC is connected).
 
-* **Don’t use “On” or “AFV.”**
-* This prevents LTC from being mixed into the Program feed.
+- Set it to ON.
+- Leave the fader at 0 dB (unity).
+- Do not apply EQ or dynamics on this channel.
+- Do not set it to OFF.
+- Do not use AFV.
 
-Leave the **fader at 0 dB** (unity). Even though it’s Off for Program, it will still be recorded ISO.
+Mic carrying LTC must be ON at record start.
+
+This ensures LTC is recorded into the ATEM ISO WAV files so it can be decoded later.
 
 Click the Gear Icon in the bottom left \> select General \> select Line (not Microphone)
 
