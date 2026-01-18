@@ -72,6 +72,10 @@ Find Mic 1 (where your Scarlett LTC is connected).
 
 Mic carrying LTC must be ON at record start.
 
+The HDMI cable connecting the ATEM to the Monitor to see video might
+also play the LTC noise which you do not want to hear. So turn the
+master audio fader down to zero.
+
 This ensures LTC is recorded into the ATEM ISO WAV files so it can be decoded later.
 
 Click the Gear Icon in the bottom left \> select General \> select Line (not Microphone)
